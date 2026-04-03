@@ -137,18 +137,18 @@ def get_longest_lifespan_breed(cache_file):
     best_breed = None
     best_life = -1
 
-    for entry in cache.values():
+    for i in cache.values():
         try:
-            attr = entry["data"]["attributes"]
+            attr = i["data"]["attributes"]
             name = attr["name"]
             life = attr.get("life", {})
             max_life = life.get("max")
 
             if isinstance(max_life, int):
-                if max_life > best_life:
+                if max_life > best_life: #finds the breed with the highest maximum lifespan
                     best_life = max_life
                     best_breed = name
-                elif max_life == best_life:
+                elif max_life == best_life:  #returns the breed that comes first in alphabetical order
                     if name < best_breed:
                         best_breed = name
         except:
@@ -182,15 +182,15 @@ def get_groups_above_cutoff(cutoff, cache_file):
 
     for i in cache.values():
         try:
-            group_id = i["data"]["relationships"]["group"]["data"]["id"]
+            group_id = i["data"]["relationships"]["group"]["data"]["id"] #gets group_id
             if group_id:
-                lst[group_id] = lst.get(group_id, 0) + 1
+                lst[group_id] = lst.get(group_id, 0) + 1 #Counts how many cached breeds belong to each Dog API group
         except:
             continue
 
     result = {}
     for group, count in lst.items():
-        if count >= cutoff:
+        if count >= cutoff: # keeps only groups whose count is greater than or equal to cutoff
             result[group] = count
 
     return result
